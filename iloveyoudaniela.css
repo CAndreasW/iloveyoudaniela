@@ -4,3 +4,61 @@
     margin: 0px;
 }
 
+body
+{
+    background: url('bkg.jpg') no-repeat center center fixed; /* Set background image */
+    background-size: cover; /* Ensures full coverage without stretching */
+
+}
+
+#container {
+    min-height: 40vh; /* Start at 40% viewport height */
+    max-height: 80vh; /* Prevent it from growing too large */
+    height: auto; /* Adjust height based on content */
+    padding: 20px; /* Adds some spacing inside */
+    overflow: visible; /* Allow it to grow instead of scrolling */
+    word-wrap: break-word; /* Ensure text wraps properly */
+    text-align: center; /* Center text inside */
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    
+    width: 40vw;
+    height: 40vh;
+    background-color: rgba(241, 134, 204, 0.8);   
+
+    border-width: 1px;
+    border-radius: 200px;
+    border-style: dotted;
+    border-color: #ce6cac;
+    
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#stockTitle
+{
+    color: #a12a78;
+    font-size: 40px;
+}
+
+#message
+{
+    color: #a12a78;
+    font-size: 30px;
+}
+
+#timeSinceMet
+{
+    color: #a12a78;
+}
+
+#timeSinceTogether
+{
+    color: #a12a78;
+}
