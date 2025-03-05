@@ -12,10 +12,10 @@ body
 }
 
 #container {
-    min-height: 20vh; /* Start at 40% viewport height */
+    min-height: 5vh; /* Start at 40% viewport height */
     max-height: 100vh; /* Prevent it from growing too large */
     height: auto; /* Adjust height based on content */
-    min-width: 20vw;
+    min-width: 5vw;
     max-width: 100vw;
     width: auto;
     padding: 20px; /* Adds some spacing inside */
