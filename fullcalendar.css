@@ -1,0 +1,130 @@
+/*fullcalendar.css*/
+
+
+/* Calendar container */
+#calendar {
+    top: 160px;
+    right: 20px;
+    width: 250px; /* Fixed width */
+    height: auto;
+    max-height: 300px; /* Fixed height */
+    padding: 15px; /* Ensures spacing inside */
+    background: var(--soft-pink);
+    border-radius: 12px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+    
+    display: flex;
+    flex-direction: column;
+
+    max-width: 100%;  /* Prevents them from exceeding their flex space */
+    min-width: 180px; /* Prevents them from becoming too small */
+    overflow: hidden;  /* Avoids unwanted horizontal scrolling */
+    font-size: clamp(12px, 1.8vw, 16px); /* Shrinks text if needed */
+}
+
+/* Sticky toolbar (title + navigation buttons) */
+.fc-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: transparent;
+    padding: 10px 0; /* Space inside instead of margin */
+    z-index: 10;
+    position: sticky;
+    top: 0;
+    border-bottom: 1px solid var(--purple);
+}
+
+/* Fix navigation buttons */
+.fc-button {
+    background-color: #ff69b4 !important;
+    border: none !important;
+    color: white !important;
+    padding: 5px 12px !important;
+    border-radius: 6px !important;
+    font-size: 14px !important;
+}
+
+.fc-button:hover {
+    background-color: #ff4da6 !important;
+}
+
+/* Navigation buttons styling */
+.fc-button-group {
+    display: flex;
+    gap: 8px;
+}
+
+/* Remove unnecessary headers */
+.fc-list-day-cushion {
+    display: none !important;
+}
+
+.fc-list-table thead {
+    display: none !important;
+    overflow-y: auto !important; /* Ensures scrolling */
+}
+
+/* Adjust spacing within the event container */
+.fc-list-event {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    padding: 10px; /* Adjust padding to prevent title from getting cut off */
+    border-bottom: 1px solid var(--purple);
+    width: 100%;
+    gap: 5px; /* Adds space between the time and the event title */
+}
+
+/* Adjust title styling to prevent overflow and allow it to take available space */
+.fc-list-event-title {
+    flex-grow: 1;
+    font-size: 16px;
+    color: #333;
+    text-align: left;
+    flex-grow: 1; /* Allow it to take remaining space */
+    word-wrap: break-word;
+    overflow-wrap: anywhere;
+    word-break: normal; /* Ensure words are broken at natural breaks, not in the middle */
+    white-space: normal; /* Allow wrapping */
+    hyphens: none; /* Disable automatic hyphenation */
+    min-width: 0; /* Prevent overflow issues */
+    display: block;
+}
+
+
+/* Ensure "all-day" stays fully visible on one line */
+.fc-list-event-time {
+    flex: 0 0 140px;
+    font-weight: bold;
+    color: #d63384;
+    text-align: left;
+    word-break: break-word; /* Ensure it breaks when needed */
+    white-space: normal; /* Allow wrapping */
+}
+
+/* Improve title styling */
+.fc-toolbar-title {
+    font-size: 20px !important;
+    font-weight: bold;
+    text-align: center;
+    flex-grow: 1;
+}
+
+/* Make the event list scrollable */
+.fc-scroller {
+    overflow-y: auto; /* Ensures scrolling */
+    max-height: 250px !important; /* Forces height limit */
+    padding-right:20px;
+}
+
+/* Scrollable event list */
+.fc-view-container {
+    flex-grow: 1; /* Ensures it takes remaining space */
+    overflow-y: auto; /* Enables vertical scrolling */
+}
+
+.fc-view-harness{
+    max-height: 250px;
+    overflow-y: auto;
+}

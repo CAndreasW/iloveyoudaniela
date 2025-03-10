@@ -1,3 +1,31 @@
+// iloveyoudaniela.js
+/* needs to be done
+-add more messages of the day
+-add timeline things
+-add events?
+-public push
+-password
+*/
+
+/*  minor additions
+-mobile layout
+*/
+
+/*  major additions
+-timeline image viewing
+-remove things from database button with are you certain prompt
+-send images in notes
+
+-locked until certain date things, or write a message to future us
+-daily compliment generator, todays compliment
+-songs playing or even a playlist
+-theme change
+*/
+
+/*  bugs
+
+*/
+
 // Special dates
 const specialDate1 = new Date(2018, 8, 4, 18, 0); // 4 Sep 2018, 18:00 (Met)
 const specialDate2 = new Date(2020, 2, 14); // 14 March 2020 (Got Together)
@@ -72,3 +100,339 @@ document.addEventListener("DOMContentLoaded", () => {
     const index = getDailyIndex();
     messageElement.textContent = messages[index];
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+    const settingsButton = document.getElementById("settingsButton");
+    const settingsPanel = document.getElementById("settingsPanel");
+    const addButton = document.getElementById("addButton");
+    const addPanel = document.getElementById("addPanel");
+
+    /*const addNewGameCheckbox = document.getElementById("addNewGameToggle");
+    const addNewGameContainer = document.getElementById("addNewGameContainer");
+    const addNewDinnerCheckbox = document.getElementById("addNewDinnerToggle");
+    const addNewDinnerContainer = document.getElementById("addNewDinnerContainer");
+    const addNewRestaurantCheckbox = document.getElementById("addNewRestaurantToggle");
+    const addNewRestaurantContainer = document.getElementById("addNewRestaurantContainer");
+    const addNewEventCheckbox = document.getElementById("addNewEventToggle");
+    const addNewEventContainer = document.getElementById("addNewEventContainer");
+    const addNewTimelineEventCheckbox = document.getElementById("addNewTimelineEventToggle");
+    const addNewTimelineEventContainer = document.getElementById("addNewTimelineEventContainer");*/
+
+    // Toggle settings panel when button is clicked
+    settingsButton.addEventListener("click", function () {
+        if (settingsPanel.style.display === "none" || settingsPanel.style.display === "") {
+            settingsPanel.style.display = "block";
+            addPanel.style.display = "none";
+        } else {
+            settingsPanel.style.display = "none";
+        }
+    });
+
+    // Toggle settings panel when button is clicked
+    addButton.addEventListener("click", function () {
+        if (addPanel.style.display === "none" || addPanel.style.display === "") {
+            addPanel.style.display = "block";
+            settingsPanel.style.display = "none";
+        } else {
+            addPanel.style.display = "none";
+            /*addNewGameCheckbox.checked = false;
+            addNewDinnerCheckbox.checked = false;
+            addNewRestaurantCheckbox.checked = false;
+            addNewEventCheckbox.checked = false;
+            addNewTimelineEventCheckbox.checked = false;
+
+            addNewGameContainer.style.display = "none";
+            addNewDinnerContainer.style.display = "none";
+            addNewRestaurantContainer.style.display = "none";
+            addNewEventContainer.style.display = "none";
+            addNewTimelineEventContainer.style.display = "none";*/
+        }
+    });
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    const nextEventCheckbox = document.getElementById("nextEventToggle");
+    const nextEventContainer = document.getElementById("nextEventContainer");
+    const nextEventDetails = document.getElementById("nextEventDetails");
+
+    function getNextUpcomingEvent() {
+        const now = new Date(); // Get the current time
+        // Do NOT modify specialEvents directly!
+        //console.log("dbEvents", dbEvents);
+        const upcomingEventStarts = dbEvents
+            .map(event => {
+                const parsedStart = new Date(event.start);
+                return { ...event, parsedStart }; // Parse start time into Date object
+            })
+            .filter(event => event.parsedStart > now) // Only consider future events
+            .sort((a, b) => a.parsedStart - b.parsedStart); // Sort by earliest start time
+        
+        // Log the filtered and sorted events to help debug
+        //console.log("Upcoming events after filtering and sorting:", upcomingEventStarts);
+    
+        if (upcomingEventStarts.length === 0) {
+            return null; // No upcoming events
+        }
+        
+        // Get the next event's start and end time
+        const nextEvent = upcomingEventStarts[0];
+    
+        // Log the next event to check its values
+        //console.log("Next event:", nextEvent);
+    
+        return {
+            title: nextEvent.title,
+            start: nextEvent.parsedStart,  // Start time of the event
+            end: new Date(nextEvent.end),  // End time of the event¨
+            allDay: nextEvent.allDay
+        };
+    }
+
+    function updateNextEventDisplay() {
+        const nextEvent = getNextUpcomingEvent();
+        //console.log(nextEvent);
+
+        if (nextEvent) {
+            let startDate, endDate;
+
+            if (nextEvent.allDay) {
+                // If it's an all-day event, show just the start date
+                startDate = nextEvent.start.toLocaleDateString();
+                nextEventDetails.innerHTML = `<strong>${nextEvent.title}</strong><br/>${startDate}<br/>All-Day`;
+                
+            } else {
+                // If it's a timed event, show start and end time
+                const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit',hour12: false};
+                startDate = nextEvent.start.toLocaleString(undefined, options);
+                endDate = nextEvent.end.toLocaleString(undefined, options);
+                nextEventDetails.innerHTML = `<strong>${nextEvent.title}</strong><br/>Starts: ${startDate}<br/>Ends: ${endDate}`;
+            }
+
+        } else {
+            nextEventDetails.textContent = "No upcoming events!";
+        }
+    }
+
+    nextEventCheckbox.addEventListener("change", function () {
+        if (nextEventCheckbox.checked) {
+            nextEventContainer.style.display = "block";
+            updateNextEventDisplay();
+        } else {
+            nextEventContainer.style.display = "none";
+        }
+    });
+
+    nextEventContainer.style.display = "none";
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    const gamesCheckbox = document.getElementById("gamesToggle");
+    const gamesContainer = document.getElementById("gamesContainer");
+    const dinnersCheckbox = document.getElementById("dinnersToggle");
+    const dinnersContainer = document.getElementById("dinnersContainer");
+    const restaurantsCheckbox = document.getElementById("restaurantsToggle");
+    const restaurantsContainer = document.getElementById("restaurantsContainer");
+    const notesCheckbox = document.getElementById("notesToggle");
+    const notesContainer = document.getElementById("savedNotesContainer");
+    const notes = document.getElementById("notes");
+    const timelineCheckbox = document.getElementById("timelineToggle");
+    const timelineContainer = document.getElementById("timelineContainer");
+    
+    // Toggle games list display when checkbox is checked or unchecked
+    gamesCheckbox.addEventListener("change", function () {
+        if (gamesCheckbox.checked) {
+            gamesContainer.style.display = "block"; // Show the games list
+        } else {
+            gamesContainer.style.display = "none"; // Hide the games list
+        }
+    });
+    dinnersCheckbox.addEventListener("change", function () {
+        if (dinnersCheckbox.checked) {
+            dinnersContainer.style.display = "block"; // Show the games list
+        } else {
+            dinnersContainer.style.display = "none"; // Hide the games list
+        }
+    });
+    restaurantsCheckbox.addEventListener("change", function () {
+        if (restaurantsCheckbox.checked) {
+            restaurantsContainer.style.display = "block"; // Show the games list
+        } else {
+            restaurantsContainer.style.display = "none"; // Hide the games list
+        }
+    });
+    notesCheckbox.addEventListener("change", function () {
+        if (notesCheckbox.checked) {
+            notesContainer.style.display = "block"; // Show notes
+            notes.scrollTop = notes.scrollHeight;
+        } else {
+            notesContainer.style.display = "none";
+        }
+    });
+    
+    timelineCheckbox.addEventListener("change", function () {
+        if (timelineCheckbox.checked) {
+            timelineContainer.style.display = "block"; // Show the games list
+        } else {
+            timelineContainer.style.display = "none"; // Hide the games list
+        }
+    });
+
+
+    // Initially hide the games list when the page loads
+    gamesContainer.style.display = "none";
+    dinnersContainer.style.display = "none";
+    restaurantsContainer.style.display = "none";
+    notesContainer.style.display = "none";
+    timelineContainer.style.display = "none";
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    const addNewGameCheckbox = document.getElementById("addNewGameToggle");
+    const addNewGameContainer = document.getElementById("addNewGameContainer");
+    const addNewDinnerCheckbox = document.getElementById("addNewDinnerToggle");
+    const addNewDinnerContainer = document.getElementById("addNewDinnerContainer");
+    const addNewRestaurantCheckbox = document.getElementById("addNewRestaurantToggle");
+    const addNewRestaurantContainer = document.getElementById("addNewRestaurantContainer");
+    const addNewEventCheckbox = document.getElementById("addNewEventToggle");
+    const addNewEventContainer = document.getElementById("addNewEventContainer");
+    const addNewTimelineEventCheckbox = document.getElementById("addNewTimelineEventToggle");
+    const addNewTimelineEventContainer = document.getElementById("addNewTimelineEventContainer");
+
+    // Toggle games list display when checkbox is checked or unchecked
+    addNewGameCheckbox.addEventListener("change", function () {
+        if (addNewGameCheckbox.checked) {
+            addNewGameContainer.style.display = "block"; // Show the games list
+
+            addNewDinnerCheckbox.checked = false;
+            addNewRestaurantCheckbox.checked = false;
+            addNewEventCheckbox.checked = false;
+            addNewTimelineEventCheckbox.checked = false;
+
+            addNewDinnerContainer.style.display = "none";
+            addNewRestaurantContainer.style.display = "none";
+            addNewEventContainer.style.display = "none";
+            addNewTimelineEventContainer.style.display = "none";
+        } else {
+            addNewGameContainer.style.display = "none"; // Hide the games list
+        }
+    });
+    addNewDinnerCheckbox.addEventListener("change", function () {
+        if (addNewDinnerCheckbox.checked) {
+            addNewDinnerContainer.style.display = "block"; // Show the games list
+
+            addNewGameCheckbox.checked = false;
+            addNewRestaurantCheckbox.checked = false;
+            addNewEventCheckbox.checked = false;
+            addNewTimelineEventCheckbox.checked = false;
+
+            addNewGameContainer.style.display = "none";
+            addNewRestaurantContainer.style.display = "none";
+            addNewEventContainer.style.display = "none";
+            addNewTimelineEventContainer.style.display = "none";
+
+        } else {
+            addNewDinnerContainer.style.display = "none"; // Hide the games list
+        }
+    });
+    addNewRestaurantCheckbox.addEventListener("change", function () {
+        if (addNewRestaurantCheckbox.checked) {
+            addNewRestaurantContainer.style.display = "block"; // Show the games list
+
+            addNewGameCheckbox.checked = false;
+            addNewDinnerCheckbox.checked = false;
+            addNewEventCheckbox.checked = false;
+            addNewTimelineEventCheckbox.checked = false;
+
+            addNewGameContainer.style.display = "none";
+            addNewDinnerContainer.style.display = "none";
+            addNewEventContainer.style.display = "none";
+            addNewTimelineEventContainer.style.display = "none";
+        } else {
+            addNewRestaurantContainer.style.display = "none"; // Hide the games list
+        }
+    });
+    addNewEventCheckbox.addEventListener("change", function () {
+        if (addNewEventCheckbox.checked) {
+            addNewEventContainer.style.display = "block"; // Show the games list
+
+            addNewGameCheckbox.checked = false;
+            addNewDinnerCheckbox.checked = false;
+            addNewRestaurantCheckbox.checked = false;
+            addNewTimelineEventCheckbox.checked = false;
+
+            addNewGameContainer.style.display = "none";
+            addNewDinnerContainer.style.display = "none";
+            addNewRestaurantContainer.style.display = "none";
+            addNewTimelineEventContainer.style.display = "none";
+        } else {
+            addNewEventContainer.style.display = "none"; // Hide the games list
+        }
+    });
+    addNewTimelineEventCheckbox.addEventListener("change", function () {
+        if (addNewTimelineEventCheckbox.checked) {
+            addNewTimelineEventContainer.style.display = "block"; // Show the games list
+
+            addNewGameCheckbox.checked = false;
+            addNewDinnerCheckbox.checked = false;
+            addNewRestaurantCheckbox.checked = false;
+            addNewEventCheckbox.checked = false;
+
+            addNewGameContainer.style.display = "none";
+            addNewDinnerContainer.style.display = "none";
+            addNewRestaurantContainer.style.display = "none";
+            addNewEventContainer.style.display = "none";
+        } else {
+            addNewTimelineEventContainer.style.display = "none"; // Hide the games list
+        }
+    });
+
+
+    // Initially hide the games list when the page loads
+    addNewGameContainer.style.display = "none";
+    addNewDinnerContainer.style.display = "none";
+    addNewRestaurantContainer.style.display = "none";
+    addNewEventContainer.style.display = "none";
+});
+
+// Handle the image upload and add another input for the next image
+function handleImageUpload(event) {
+    const fileInput = event.target;
+
+    // Check if the current file input is used
+    if (fileInput.files && fileInput.files.length > 0) {
+        // Dynamically create a new file input
+        const newFileInput = document.createElement('input');
+        newFileInput.type = 'file';
+        newFileInput.accept = 'image/*';
+        newFileInput.classList.add('timelineImageInput'); // Optionally add a class for styling
+        newFileInput.setAttribute('onchange', 'handleImageUpload(event)'); // Same function for handling file change
+
+        // Insert the new file input just before the save button
+        const saveButton = document.getElementById('saveTimelineEvent');
+        const addPanel = document.getElementById('addNewTimelineEventContainer');
+        
+        // Insert the new file input before the save button
+        addPanel.insertBefore(newFileInput, saveButton);
+    }
+}
+
+// Function to convert image file to base64
+function convertImageToBase64(imageFile, callback) {
+    const reader = new FileReader();
+    reader.onloadend = function () {
+        callback(reader.result); // Get the base64 string after the file is read
+    };
+    reader.readAsDataURL(imageFile); // Start reading the file as a data URL (base64)
+}
+
+function getOrdinalSuffix(day) {
+    if (day >= 11 && day <= 13) {
+        return `${day}th`; // Special case for 11th, 12th, 13th
+    }
+    switch (day % 10) {
+        case 1: return `${day}st`;
+        case 2: return `${day}nd`;
+        case 3: return `${day}rd`;
+        default: return `${day}th`;
+    }
+}

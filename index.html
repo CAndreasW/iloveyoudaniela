@@ -1,12 +1,15 @@
+<!--index.html-->
+
 <!doctype html>
 <html lang="en">
     <head>
         <meta charset="utf-8">
         <title>I love you</title>
         <link rel="stylesheet" type="text/css" href="iloveyoudaniela.css">
+        <link rel="stylesheet" type="text/css" href="fullcalendar.css">
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Dancing+Script:wght@500;700&display=swap" rel="stylesheet">
     </head>
     <body>
-		<!-- såhär gör man kommentarer -->
         <div id="container">
             <br/><br/><h1 id="stockTitle">Your Special Message of the Day</h1><br/>
             <div id="message">Loading...</div><br/>
@@ -14,6 +17,189 @@
             <div id="timeSinceTogether">Loading...</div><br/><br/>
         </div>
 
+        <div id="timelineContainer" style="display:none;">
+            <div id="timelineTitle">Our Timeline</div>
+            <div id="timeline"></div>
+        </div>
+        
+        <div id="buttonContainer">
+            <button id="settingsButton">⚙ Settings</button>
+            <button id="addButton">⚙ Add</button>
+        </div>
+
+        <div id="settingsPanel">
+            <h3>Settings</h3>
+            <label>
+                <input type="checkbox" id="calendarToggle"> Show Calendar
+            </label>
+            <br/>
+            <label>
+                <input type="checkbox" id="nextEventToggle"> Show Next Event
+            </label>
+            <br/>
+            <label>
+                <input type="checkbox" id="gamesToggle"> Show Games
+            </label>
+            <br/>
+            <label>
+                <input type="checkbox" id="dinnersToggle"> Show Dinners
+            </label>  
+            <br/>
+            <label>
+                <input type="checkbox" id="restaurantsToggle"> Show Restaurants
+            </label>     
+            <br/>
+            <label>
+                <input type="checkbox" id="notesToggle"> Show Notes
+            </label>
+            <br/>
+            <label>
+                <input type="checkbox" id="timelineToggle"> Show Timeline
+            </label>    
+        </div>
+
+        <div id="addPanel">
+            <h3>Add</h3>
+            <label>
+                <input type="checkbox" id="addNewGameToggle"> Add New Game
+            </label>
+            <br/>
+            <label>
+                <input type="checkbox" id="addNewDinnerToggle"> Add New Dinner
+            </label>
+            <br/>
+            <label>
+                <input type="checkbox" id="addNewRestaurantToggle"> Add New Restaurant
+            </label>
+            <br/>
+            <label>
+                <input type="checkbox" id="addNewEventToggle"> Add New Event
+            </label>
+            <br/>
+            <label>
+                <input type="checkbox" id="addNewTimelineEventToggle"> Add New Timeline Event
+            </label>
+        </div>
+
+        <div class="flex-container">
+
+            <div id="flex-left">
+                <div id="gamesContainer" class="container" style="display:none;">
+                    <h3>Games</h3>
+                    <ul id="gamesList">
+                        <li>Civ 6 or 7</li>
+                        <li>Stardew Valley</li>
+                        <li>Slime Rahcner</li>
+                        <li>Baldurs Gate 3</li>
+                        <li>Hades 2</li>
+                    </ul>
+                </div>
+
+                <div id="restaurantsContainer" class="container" style="display:none;">
+                    <h3>Restaurants</h3>
+                    <ul id="restaurantsList">
+                        <li>Foodora</li>
+                        <li>That one asian place</li>
+                        <li>Tokyo Ramen</li>
+                        <li>Sushin utanför Daniela</li>
+                        <li>Faros</li>
+                        <li>Moldau</li>
+                    </ul>
+                </div>   
+
+                <div id="savedNotesContainer" class="container" style="display:none;">
+                    <h3>Notes:</h3>
+                    <div id="notes">
+                    </div>
+                    <br/>
+                    <textarea id="noteInput" placeholder="Write something..."></textarea>
+                    <button id="saveButton">Save</button>
+                </div>
+
+                <div id="dinnersContainer" class="container" style="display:none;">
+                    <h3>Dinners</h3>
+                    <ul id="dinnersList">
+                        <li>Kyckling i Vild Sås med Rösti</li>
+                        <li>Falukorv och Potatis med Pepparrotssås</li>
+                        <li>Köttbullar och Potatis med brunsås</li>
+                        <li>Cowboysoppa</li>
+                        <li>Potatis- och Purjolökssoppa</li>
+                        <li>Kyckling i Grönpepparsås med Potatisklyftor</li>
+                        <li>Pieroger</li>
+                    </ul>
+                </div>   
+
+
+
+            </div>
+    
+            <div id="flex-top-right">
+                <div id="calendar" class="container" style="display:none;"></div>
+
+                <div id="nextEventContainer" class="container" style="display:none;">
+                    <h2 id="nextEventTitle">Next Event 📅</h2>
+                    <div id="nextEventDetails">Loading...</div>
+                </div>
+
+                <div id="addNewEventContainer" class="container addContainer" style="display:none;">
+                    <label for="eventTitle">Event Title:</label>
+                    <input type="text" id="eventTitle" placeholder="Enter title" />
+                    <br/>
+                    <label for="eventStart">Start Date and Time:</label>
+                    <input type="datetime-local" id="eventStart" value="${formatDate(startDate)}" />
+                    <br/>
+                    <label for="eventEnd">End Date and Time:</label>
+                    <input type="datetime-local" id="eventEnd" value="${formatDate(endDate)}" />
+                    <br/>
+                    <label for="allDay">All-Day Event:</label>
+                    <input type="checkbox" id="allDay" ${allDay ? 'checked' : ''} />
+                    <br/>
+                    <button id="saveEvent">Save Event</button>
+                </div>
+        
+                <div id="addNewGameContainer" class="container addContainer" style="display:none;">
+                    <label for="gameTitle">Game Title:</label>
+                    <input type="text" id="gameTitle" placeholder="Enter title" />
+                    <button id="saveGame">Save</button>
+                </div>
+        
+                <div id="addNewDinnerContainer" class="container addContainer" style="display:none;">
+                    <label for="dinnerTitle">Dinner Title:</label>
+                    <input type="text" id="dinnerTitle" placeholder="Enter title" />
+                    <button id="saveDinner">Save</button>
+                </div>
+        
+                <div id="addNewRestaurantContainer" class="container addContainer" style="display:none;">
+                    <label for="restaurantTitle">Restaurant Title:</label>
+                    <input type="text" id="restaurantTitle" placeholder="Enter title" />
+                    <button id="saveRestaurant">Save</button>
+                </div>
+                
+                <div id="addNewTimelineEventContainer" class="container addContainer" style="display:none;">
+                    <label for="timelineEventTitle">Timeline Event Title:</label>
+                    <input type="text" id="timelineEventTitle" placeholder="Enter title" />
+                    <br/>
+                    <label for="timelineEventDate">Date:</label>
+                    <input type="date" id="timelineEventDate"/>
+                    <br/>
+                    <label for="timelineEventDescription">Timeline Event Description:</label>
+                    <input type="text" id="timelineEventDescription" placeholder="Enter description" />
+                    <br/>
+                    <label for="timelineEventImage">Upload Image:</label>
+                    <input type="file" id="timelineEventImage" accept="image/*" class="timelineImageInput" onchange="handleImageUpload(event)" />
+                    <br/>
+                    <button id="saveTimelineEvent">Save</button>
+                </div>
+
+            </div>
+        </div>
+        
+        <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-app-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-database-compat.js"></script>
+        <script src="firebase.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+        <script src="fullcalendar.js"></script>
         <script src="iloveyoudaniela.js"></script>
     </body>
 </html>
