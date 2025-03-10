@@ -1,14 +1,14 @@
 // firebase.js
 // Firebase configuration (Replace with your actual Firebase config)
 const firebaseConfig = {
-    apiKey: process.env.FIREBASE_API_KEY,
-    authDomain: process.env.FIREBASE_AUTH_DOMAIN,
-    projectId: process.env.FIREBASE_PROJECT_ID,
-    storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
-    messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
-    appId: process.env.FIREBASE_APP_ID,
-    measurementId: process.env.FIREBASE_MEASUREMENT_ID,
-    databaseURL: process.env.FIREBASE_DATABASE_URL
+    apiKey: "AIzaSyCawCr-my7hFbCpsik9kFBCBI0y2F5tKJc",
+    authDomain: "iloveyoudaniela-a4a3d.firebaseapp.com",
+    projectId: "iloveyoudaniela-a4a3d",
+    storageBucket: "iloveyoudaniela-a4a3d.appspot.com",  // 🔹 Fixed here!
+    messagingSenderId: "240043727028",
+    appId: "1:240043727028:web:9c5377c66d9d5592e8dfe1",
+    measurementId: "G-XWPX7T3C9F",
+    databaseURL: "https://iloveyoudaniela-a4a3d-default-rtdb.europe-west1.firebasedatabase.app/"
 };
 
 let dbGames = []; // This will store the loaded games
