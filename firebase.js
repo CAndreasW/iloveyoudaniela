@@ -388,7 +388,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         }
                     });
                 }
-                loadTimelineEventsFromDatabase();
+                //loadTimelineEventsFromDatabase();
                 document.getElementById("timelineEventTitle").value = "";
                 document.getElementById("timelineEventDate").value = "";
                 document.getElementById("timelineEventDescription").value = ""; // Clear the input field after saving
@@ -511,7 +511,7 @@ document.addEventListener("DOMContentLoaded", function () {
     loadRestaurantsFromDatabase();
     loadEventsFromDatabase();
     loadNotesFromDatabase();
-    loadTimelineEventsFromDatabase();
+    //loadTimelineEventsFromDatabase();
 
     // Attach function to the button (Make sure button exists before attaching)
     document.getElementById("saveGame").addEventListener("click", saveGameToDatabase);

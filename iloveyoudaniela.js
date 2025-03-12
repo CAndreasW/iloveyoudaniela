@@ -1,20 +1,18 @@
 // iloveyoudaniela.js
 /* needs to be done
 -add more messages of the day
--add timeline things
--add events?
--public push
 -password
 */
 
 /*  minor additions
--mobile layout
+-mobile layout, its honestly not bad as is right now though
 */
 
 /*  major additions
 -timeline image viewing
 -remove things from database button with are you certain prompt
 -send images in notes
+-save videos in timeline and notes
 
 -locked until certain date things, or write a message to future us
 -daily compliment generator, todays compliment
@@ -23,7 +21,11 @@
 */
 
 /*  bugs
-
+-the timeline images arent all visible, either make the popup bigger, add an image
+viewer or something else
+-when adding multiple files it doesnt fit, add scrollbar prob
+-the distances seem a bit off for the timeline
+-when adding new timeline events, things get messy, however upon reload it becomse correct
 */
 
 // Special dates
