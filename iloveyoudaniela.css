@@ -353,6 +353,19 @@ input[type="checkbox"] {
     transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
 
+/* Expand the hoverable area */
+.timelineEventDot::after {
+    content: "";
+    position: absolute;
+    top: -30px; /* Adjust to match popup's position */
+    left: 50%;
+    width: 40px;
+    height: 40px; /* Increase hoverable area */
+    transform: translateX(-50%);
+    background: transparent;
+    pointer-events: auto; /* Allows hover detection */
+}
+
 /* Fix: Scale animation without shifting */
 .timelineEventDot:hover {
     transform: translate(-50%, 50%) scale(1.2); /* Keeps scaling centered */
@@ -377,10 +390,93 @@ input[type="checkbox"] {
     text-align: center;
     color: #a12a78;
     transition: opacity 0.2s ease-in-out;
+    overflow: hidden;
+}
+
+/* NEW: Scrollable Image Container */
+.imageContainer {
+    max-height: 200px; /* Keep images inside */
+    overflow-x: auto;  /* Enable horizontal scrolling */
+    overflow-y: hidden;  /* Enable horizontal scrolling */
+    white-space: nowrap; /* Keep images in a row */
+    padding: 10px 0px 10px 0px;
+}
+
+/* Image inside popup */
+.eventImage {
+    padding: 10px;
+    height: 170px;
+    width: auto;
+    display: inline-block; /* Align images in a row */
+    margin-right: 5px; /* Space between images */
+    border-radius: 8px;
+    box-shadow: 0 0 5px rgba(255, 105, 180, 0.4);
+}
+
+/* 🔍 Fullscreen Image Viewer */
+.image-viewer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.8);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    cursor: pointer;
+}
+
+/* 🌟 Fullscreen Image */
+.fullscreen-image {
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 8px;
+    box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.4);
+}
+
+/* ⬅➡ Navigation Buttons */
+.nav-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.5);
+    color: black;
+    border: none;
+    padding: 15px;
+    font-size: 24px;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: 0.3s;
+    z-index: 10000;
+}
+
+.nav-button:hover {
+    background: rgba(255, 255, 255, 0.8);
+}
+
+/* Position left/right buttons */
+.left-button {
+    left: 5%;
+}
+
+.right-button {
+    right: 5%;
+}
+
+/* Hide buttons when there's no prev/next image */
+.nav-button.hidden {
+    display: none;
 }
 
 /* Show popup on hover */
 .timelineEvent:hover .popup {
+    display: block;
+    opacity: 1;
+}
+
+.popup:hover .popup {
     display: block;
     opacity: 1;
 }
@@ -404,15 +500,6 @@ input[type="checkbox"] {
 .timelineEventTime {
     font-size: 12px;
     color: #777;
-}
-
-/* Image inside popup */
-.eventImage {
-    max-width: 100px;
-    height: auto;
-    margin-top: 5px;
-    border-radius: 8px;
-    box-shadow: 0 0 5px rgba(255, 105, 180, 0.4);
 }
 
 /* Timeline Title */

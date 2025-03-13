@@ -9,7 +9,6 @@
 */
 
 /*  major additions
--timeline image viewing
 -remove things from database button with are you certain prompt
 -send images in notes
 -save videos in timeline and notes
@@ -21,11 +20,11 @@
 */
 
 /*  bugs
--the timeline images arent all visible, either make the popup bigger, add an image
-viewer or something else
 -when adding multiple files it doesnt fit, add scrollbar prob
 -the distances seem a bit off for the timeline
 -when adding new timeline events, things get messy, however upon reload it becomse correct
+-adding a new event bugs the calendar until reload
+-calendar event input dates dont fit
 */
 
 // Special dates
@@ -438,3 +437,81 @@ function getOrdinalSuffix(day) {
         default: return `${day}th`;
     }
 }
+
+function attachImageClickListeners(imageContainer) {
+    let images = [];
+    let currentIndex = 0;
+
+    // ✅ Ensure only ONE image viewer exists
+    let imageViewer = document.querySelector(".image-viewer");
+    if (!imageViewer) {
+        imageViewer = document.createElement("div");
+        imageViewer.classList.add("image-viewer");
+        imageViewer.innerHTML = `
+            <button class="nav-button left-button">&larr;</button>
+            <img class="fullscreen-image" />
+            <button class="nav-button right-button">&rarr;</button>
+        `;
+        document.body.appendChild(imageViewer);
+    }
+
+    const fullscreenImage = imageViewer.querySelector(".fullscreen-image");
+    const leftButton = imageViewer.querySelector(".left-button");
+    const rightButton = imageViewer.querySelector(".right-button");
+
+    function updateImage(index) {
+        if (images.length === 0) return;
+        currentIndex = (index + images.length) % images.length; // Circular navigation
+        fullscreenImage.src = images[currentIndex].src;
+    }
+
+    function openImageViewer(clickedImage) {
+        // ✅ Reset `images` to ONLY include images from the clicked event
+        const eventPopup = clickedImage.closest(".popup"); 
+        if (!eventPopup) return;
+
+        images = Array.from(eventPopup.querySelectorAll(".eventImage")); // Get only images from this event
+        currentIndex = images.indexOf(clickedImage); // Get the clicked image's index
+        updateImage(currentIndex);
+        imageViewer.style.display = "flex";
+
+        // ✅ Update button event listeners **inside** `openImageViewer`
+        leftButton.onclick = () => updateImage(currentIndex - 1);
+        rightButton.onclick = () => updateImage(currentIndex + 1);
+
+        // ✅ Enable keyboard navigation while the viewer is open
+        document.addEventListener("keydown", handleKeyPress);
+    }
+
+    function closeImageViewer() {
+        imageViewer.style.display = "none";
+
+        // ✅ Remove keyboard event listener when the viewer is closed
+        document.removeEventListener("keydown", handleKeyPress);
+    }
+
+    function handleKeyPress(event) {
+        if (event.key === "ArrowLeft") {
+            updateImage(currentIndex - 1);
+        } else if (event.key === "ArrowRight") {
+            updateImage(currentIndex + 1);
+        } else if (event.key === "Escape") {
+            closeImageViewer(); // Close on ESC key
+        }
+    }
+
+    imageViewer.onclick = (e) => {
+        if (e.target === imageViewer) closeImageViewer();
+    };
+
+    // ✅ Attach event listeners to images *once they are added*
+    imageContainer.querySelectorAll(".eventImage").forEach((img) => {
+        img.addEventListener("click", () => openImageViewer(img));
+    });
+}
+
+
+
+
+
+

@@ -246,6 +246,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     
     function loadEventsFromDatabase() {
+        //console.log("running loadevents...")
         db.collection("events")
             .orderBy("createdAt")
             .get()
@@ -254,7 +255,7 @@ document.addEventListener("DOMContentLoaded", function () {
     
                 querySnapshot.forEach((doc) => {
                     const event = doc.data();
-    
+                    //console.log(event);
                     // ✅ Force conversion of string dates to JavaScript Date objects
                     let startDate = new Date(event.start);
                     let endDate = event.end ? new Date(event.end) : startDate;
@@ -268,7 +269,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     });
                 });
                 dbEvents = newEvents; // 🔹 Store in dbEvents globally
-
+                //console.log(dbEvents);
                 if (calendar) {
                     calendar.removeAllEvents();
                     calendar.render(); // 🔥 Force re-render
@@ -280,7 +281,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     }, 10);
                 } else {
                     //console.warn("⚠️ Calendar not initialized yet, retrying...");
-                    setTimeout(loadEventsFromDatabase, 500);
+                    setTimeout(loadEventsFromDatabase, 1000);
                 }
             })
             .catch((error) => {
@@ -388,7 +389,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         }
                     });
                 }
-                //loadTimelineEventsFromDatabase();
+                loadTimelineEventsFromDatabase();
                 document.getElementById("timelineEventTitle").value = "";
                 document.getElementById("timelineEventDate").value = "";
                 document.getElementById("timelineEventDescription").value = ""; // Clear the input field after saving
@@ -408,110 +409,96 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     
     function loadTimelineEventsFromDatabase() {
-        // Reference to the Firebase Firestore and Realtime Database
-        db.collection("timelineEvents")  // Access the "timelineEvents" collection in Firestore
-            .orderBy("date")  // Order events by date
-            .get()  // Retrieve all documents in the collection
+        db.collection("timelineEvents")
+            .orderBy("date")
+            .get()
             .then((querySnapshot) => {
                 const timeline = document.getElementById("timeline");
-
-                // Create an array to store all events and their dates
+                timeline.innerHTML = ""; // Clear previous events
+    
                 let eventsArray = [];
     
                 querySnapshot.forEach((doc) => {
                     const event = doc.data();
-                    const eventDate = new Date(event.date); // event.date is stored as a string (YYYY-MM-DD)
+                    const eventDate = new Date(event.date);
     
-                    // Push event details into the array
                     eventsArray.push({
-                        id: doc.id,  // Save the Firestore document ID
+                        id: doc.id,
                         title: event.title,
                         description: event.description,
                         date: eventDate
                     });
                 });
     
-                // Ensure we have events and calculate the range of time between the first and last events
                 if (eventsArray.length > 0) {
                     const firstEventDate = eventsArray[0].date;
                     const lastEventDate = eventsArray[eventsArray.length - 1].date;
-    
-                    // Calculate the total duration between the first and last event (in milliseconds)
                     const totalDuration = lastEventDate - firstEventDate;
     
-                    // Create a relative timeline for each event
                     eventsArray.forEach((event) => {
                         const eventElement = document.createElement("div");
                         eventElement.classList.add("timelineEvent");
     
-                        // Calculate the position of the dot based on the event's date
-                        const eventPosition = ((event.date - firstEventDate) / totalDuration) * 100; // Percentage of the timeline
-
-                        // Create the dot for the event
+                        const eventPosition = ((event.date - firstEventDate) / totalDuration) * 100;
+                        const eventDateString = event.date.toISOString().split('T')[0];
+    
+                        // Event Dot
                         const dotElement = document.createElement("div");
                         dotElement.classList.add("timelineEventDot");
-                        dotElement.style.left = `${eventPosition}%`; // Set left based on percentage (without extra offsets)
+                        dotElement.style.left = `${eventPosition}%`;
     
-                        // Format the date to display it in YYYY-MM-DD format
-                        const eventDateString = event.date.toISOString().split('T')[0]; // Format to YYYY-MM-DD
-    
-                        // Create the popup for the event
+                        // Popup
                         const popupElement = document.createElement("div");
                         popupElement.classList.add("popup");
+                        popupElement.style.left = `${eventPosition}%`;
     
                         popupElement.innerHTML = `
                             <div class="timelineEventTitle">${event.title}</div>
                             <div class="timelineEventDescription">${event.description}</div>
                             <div class="timelineEventDate">${eventDateString}</div>
+                            <div class="imageContainer"></div> <!-- Image container -->
                         `;
     
-                        // Load images for this event from Realtime Database
-                        const imagesRef = firebase.database().ref(`timelineEvents/${event.id}/images`);
-                        imagesRef.once("value")
+                        const imageContainer = popupElement.querySelector(".imageContainer");
+    
+                        // Load images from Firebase and attach listeners immediately
+                        firebase.database().ref(`timelineEvents/${event.id}/images`).once("value")
                             .then((imageSnapshot) => {
                                 if (imageSnapshot.exists()) {
                                     imageSnapshot.forEach((imageData) => {
                                         const imageElement = document.createElement("img");
-                                        imageElement.src = imageData.val().imageUrl;  // Use the image URL
-                                        imageElement.classList.add("eventImage");  // Add a class for styling
-                                        popupElement.appendChild(imageElement);  // Append the image inside the popup
+                                        imageElement.src = imageData.val().imageUrl;
+                                        imageElement.classList.add("eventImage");
+    
+                                        imageContainer.appendChild(imageElement);
                                     });
+    
+                                    // 🔥 Attach click listeners immediately after images are added
+                                    attachImageClickListeners(imageContainer);
                                 }
                             })
-                            .catch((error) => {
-                                console.error("Error loading images: ", error);
-                            });
+                            .catch((error) => console.error("Error loading images: ", error));
     
-                        // Position the popup dynamically relative to the dot
-                        popupElement.style.left = `${eventPosition}%`; // Set left relative to the dot
-    
-                        // Append the dot and popup to the event element
                         eventElement.appendChild(dotElement);
                         eventElement.appendChild(popupElement);
                         timeline.appendChild(eventElement);
-    
-                        // Event dot hover effect
-                        dotElement.addEventListener("mouseenter", () => {
-                            popupElement.style.display = "block"; // Show popup on hover
-                        });
-    
-                        dotElement.addEventListener("mouseleave", () => {
-                            popupElement.style.display = "none"; // Hide popup when mouse leaves
-                        });
                     });
                 }
             })
-            .catch((error) => {
-                console.error("Error loading timeline events: ", error);
-            });
+            .catch((error) => console.error("Error loading timeline events: ", error));
     }
+    
+    
+    
+
+    
     
     loadGamesFromDatabase();
     loadDinnersFromDatabase();
     loadRestaurantsFromDatabase();
     loadEventsFromDatabase();
     loadNotesFromDatabase();
-    //loadTimelineEventsFromDatabase();
+    loadTimelineEventsFromDatabase();
 
     // Attach function to the button (Make sure button exists before attaching)
     document.getElementById("saveGame").addEventListener("click", saveGameToDatabase);
