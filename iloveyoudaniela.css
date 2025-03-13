@@ -42,7 +42,7 @@ body {
     top: 50%;  /* ✅ Move it to the middle of the viewport */
     left: 50%;
     transform: translate(-50%, -50%); /* ✅ Center it both horizontally and vertically */
-    z-index: -1;
+    z-index: -2;
 }
 
 
@@ -59,6 +59,7 @@ body {
     flex: 1 1 auto; /* ✅ Allow shrinking while keeping space usage reasonable */
     max-height: calc(95vh); /* Leaves space for margins */
     max-width: calc(50vw - 100px); /* Leaves padding to prevent overflow */
+    z-index: -1;
 }
 
 /* 📌 Right Section: Respects space and doesn't push over */
@@ -71,6 +72,7 @@ body {
     flex: 1 1 auto; /* ✅ Allow shrinking while keeping space usage reasonable */
     max-height: calc(100vh - 50px); /* Leaves space for margins */
     max-width: calc(50vw - 100px); /* Leaves padding to prevent overflow */
+    z-index: -2;
 }
 
 
@@ -115,7 +117,7 @@ body {
     min-width: 300px;
     max-width: 800px;
     text-align: center;
-    z-index: -2;
+    z-index: -3;
     box-shadow: 0px 4px 12px var(--shadow-color);
     transition: 0.3s ease-in-out;
 }
