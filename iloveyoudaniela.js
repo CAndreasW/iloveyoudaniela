@@ -77,13 +77,13 @@ const messages = [
     "You make my world brighter just by being in it.",
     "Every day I love you more than the last.",
     "Your kindness and warmth make my life so much better.",
+    "I would romance you in every playthrough of my life.",
     "I can't believe I get to call you mine.",
     
     "You are the most adorable human, and this is a scientific fact.",
     "If loving you was a full-time job, I'd never need a vacation.",
     "If there was a national holiday for being cute, you’d be the mascot.",
     "You are my 5-star limited-time event character.",
-    "I would romance you in every playthrough of my life.",
 
     "You are the slayest girl in the gal-axy."
 ];
